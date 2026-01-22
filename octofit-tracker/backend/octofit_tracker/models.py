@@ -1,7 +1,9 @@
 from django.db import models
+from djongo.models import ObjectIdField
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 class Team(models.Model):
+    id = ObjectIdField(primary_key=True, editable=False)
     name = models.CharField(max_length=100, unique=True)
     def __str__(self):
         return self.name
@@ -30,6 +32,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
+    id = ObjectIdField(primary_key=True, editable=False)
     email = models.EmailField(unique=True)
     team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True)
     username = models.CharField(max_length=150, blank=True)
@@ -44,6 +47,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Activity(models.Model):
+    id = ObjectIdField(primary_key=True, editable=False)
     user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='activities')
     activity_type = models.CharField(max_length=100)
     duration_minutes = models.PositiveIntegerField()
@@ -58,6 +62,7 @@ class Activity(models.Model):
 
 
 class Leaderboard(models.Model):
+    id = ObjectIdField(primary_key=True, editable=False)
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='leaderboards')
     total_points = models.PositiveIntegerField(default=0)
     week_start = models.DateField()
@@ -68,6 +73,7 @@ class Leaderboard(models.Model):
 
 
 class Workout(models.Model):
+    id = ObjectIdField(primary_key=True, editable=False)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     difficulty = models.CharField(max_length=50, choices=[('easy', 'Easy'), ('medium', 'Medium'), ('hard', 'Hard')])
